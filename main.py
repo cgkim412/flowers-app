@@ -8,18 +8,24 @@ import gradio as gr
 
 db = FlowerDatabase()
 table = prepare_table("flower_colors.csv")
-symbols = pd.read_csv("all_symbols.csv").word.values.tolist()
 seasons = "spring summer autumn winter".split()
+symbols = "" + pd.read_csv("all_symbols.csv").word.values.tolist()
 
 
 def recommend_flowers(img, season, symbol):
+    if not season:
+        season = None
+    if not symbol:
+        symbol = None
     ref_colors = extract_colors(img)["rgb"]
-    colors = table.batch_query(ref_colors)[:4]
+    ref_colors = table.batch_query(ref_colors)[:4]
     all_flowers = []
-    for name, rgb in colors:
+    colors = []
+    for name, rgb in ref_colors:
         flowers = db.get_flowers_by(color=name, season=season, symbol=symbol)[:3]
         all_flowers += flowers
-    return all_flowers
+        colors.append(name)
+    return dict(extracted_colors=colors, recommended_flowers=all_flowers)
 
 
 gr.Interface(
