@@ -9,7 +9,7 @@ import gradio as gr
 db = FlowerDatabase()
 table = prepare_table("flower_colors.csv")
 seasons = "spring summer autumn winter".split()
-symbols = "" + pd.read_csv("all_symbols.csv").word.values.tolist()
+symbols = [""] + pd.read_csv("all_symbols.csv").word.values.tolist()
 
 
 def recommend_flowers(img, season, symbol):
